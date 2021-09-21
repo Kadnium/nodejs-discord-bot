@@ -21,9 +21,7 @@
                     "musiikki"
                 ],
                 "ranks": [
-                    "Sasilainen",
-                    "Sasittelija",
-                    "Kotiutuneet"
+                    "Rooli"
                 ],
                 "users": []
             }
@@ -44,9 +42,7 @@
                     "äänestys"
                 ],
                 "ranks": [
-                    "Sasittelija",
-                    "Sasilainen",
-                    "Kotiutuneet"
+                    "Rooli"
                 ],
                 "users": []
             },
@@ -64,17 +60,14 @@
             "mute": {
                 "channels": [],
                 "ranks": [
-                    "Sasittelija",
-                    "Kotiutuneet"
+                    "Rooli"
                 ],
                 "users": []
             },
             "media": {
                 "channels": [],
                 "ranks": [
-                    "Sasilainen",
-                    "Sasittelija",
-                    "Kotiutuneet"
+                    "Rooli"
                 ],
                 "users": []
             }
