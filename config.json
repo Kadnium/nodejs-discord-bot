@@ -1,0 +1,83 @@
+{
+    "prefix": "!",
+    "name": "bot_name",
+    "helpurl": "none",
+    "autorole": "none",
+    "token": "server_token",
+    "token_debug": "debug_token_if_needed",
+    "youtube_api_key": "deprecated",
+    "music_theme_color": "#000000",
+    "main_theme_color": "#0000ff",
+    "welcome_message": "",
+    "permissions": {
+        "music": {
+            "channels": [
+                "musiikki"
+            ],
+            "ranks": [],
+            "users": [],
+            "volume": {
+                "channels": [
+                    "musiikki"
+                ],
+                "ranks": [
+                    "Sasilainen",
+                    "Sasittelija",
+                    "Kotiutuneet"
+                ],
+                "users": []
+            }
+        },
+        "common": {
+            "channels": [],
+            "ranks": [],
+            "users": [],
+            "vote": {
+                "channels": [
+                    "äänestys"
+                ],
+                "ranks": [],
+                "users": []
+            },
+            "voteAdmin": {
+                "channels": [
+                    "äänestys"
+                ],
+                "ranks": [
+                    "Sasittelija",
+                    "Sasilainen",
+                    "Kotiutuneet"
+                ],
+                "users": []
+            },
+            "year": {
+                "channels": [
+                    "2018",
+                    "2019",
+                    "2020"
+                ],
+                "ranks": [],
+                "users": []
+            }
+        },
+        "messageGate": {
+            "mute": {
+                "channels": [],
+                "ranks": [
+                    "Sasittelija",
+                    "Kotiutuneet"
+                ],
+                "users": []
+            },
+            "media": {
+                "channels": [],
+                "ranks": [
+                    "Sasilainen",
+                    "Sasittelija",
+                    "Kotiutuneet"
+                ],
+                "users": []
+            }
+        }
+    }
+}

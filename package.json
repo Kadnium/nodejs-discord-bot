@@ -1,0 +1,35 @@
+{
+  "name": "nodebot",
+  "version": "1.0.0",
+  "engines": {
+    "node": "14.15.0"
+  },
+  "description": "Discord javascript bot",
+  "main": "index.js",
+  "dependencies": {
+    "@discordjs/opus": "^0.3.3",
+    "discord.js": "^12.4.1",
+    "express": "^4.17.1",
+    "simple-youtube-api": "^5.2.1",
+    "socket.io": "^4.0.1",
+    "uuid": "^8.3.2",
+    "youtubei": "0.0.1-rc.14",
+    "ytdl-core": "4.9.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main/index.js"
+  },
+  "author": "Kadnium",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kadnium/KalabotJS.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Kadnium/KalabotJS/issues"
+  },
+  "homepage": "https://github.com/Kadnium/KalabotJS#readme"
+}

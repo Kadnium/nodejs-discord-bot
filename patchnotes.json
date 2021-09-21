@@ -1,0 +1,29 @@
+{
+    "info": {
+        "madeby": "Kadnium",
+        "language": "Javascript",
+        "hosted": "Heroku"
+    },
+    "versionHistory": [
+        {
+            "version": "0.1",
+            "features": "Lisätty musiikkisoitin sekä help",
+            "fixes": "-"
+        },
+        {
+            "version": "0.15",
+            "features": "Lisätty patchnotes sekä info",
+            "fixes": "Korjauksia musiikkisoittimeen"
+        },
+        {
+            "version": "0.3",
+            "features": "Lisätty äänestys ja radio",
+            "fixes": "-"
+        },
+        {
+            "version": "0.4",
+            "features": "Lisätty vuosi, images, gifs, (mute, unmute)",
+            "fixes": "-"
+        }
+    ]
+}
