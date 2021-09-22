@@ -7,7 +7,9 @@
 
 2. configure config.json 
 
-3. npm start
+3. npm install
+
+4. npm start
 
 
 ### Config variables
