@@ -1,12 +1,29 @@
 //const { youtube_api_key, music_theme_color, main_theme_color, permissions, prefix, name, helpurl } = require('../config')
 const { MessageEmbed } = require('discord.js');
+const { getAllowedArray } = require('../helpers/helpers');
 
-module.exports = function ({ youtube_api_key, music_theme_color, main_theme_color, permissions, prefix, name, helpurl }) {
-    let pub = {}
-    pub.help = function (msgObj, command, funcs) {
+module.exports = function ({ youtube_api_key, permissions, main_theme_color, commands, prefix, name, helpurl }) {
+
+    const getFromConfig = (key) => {
+        if (commands[key]) {
+            return commands[key]
+        } else {
+            throw "INFO.JS " + key + " COMMAND NOT DEFINED IN CONFIG"
+        }
+
+    }
+
+
+    const helpCommand = (msgObj, command, funcs) => {
         let helpEmbed = new MessageEmbed();
         let channel = msgObj.channel;
-        let keys = Object.keys(funcs);
+        let keys = {}
+        Object.keys(funcs).forEach(key => {
+            if (key !== "help" && !key.includes("help")) {
+                keys[funcs[key].key] = key
+            }
+        });
+        keys = Object.values(keys)
         helpEmbed.setColor(main_theme_color)
             .setTitle(name + 'in komennot');
         let cmdStr = ""
@@ -17,9 +34,10 @@ module.exports = function ({ youtube_api_key, music_theme_color, main_theme_colo
 
         for (let i = 0; i < keys.length; ++i) {
             let key = keys[i];
-            let commandData = funcs[key]();
+            let commandData = funcs[key];
             if (command[1]) {
-                if (commandData.allowedRanks.filter(rank => rank === command[1]).length === 0) {
+                let allowedRanks = getAllowedArray(permissions, commandData, "ranks");
+                if (allowedRanks.filter(rank => rank === command[1]).length === 0) {
                     continue;
                 }
             }
@@ -38,17 +56,19 @@ module.exports = function ({ youtube_api_key, music_theme_color, main_theme_colo
 
     }
 
-    pub.helpHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 1;
-        let usage = "help";
-        let description = "Listaa tiedot komennoista";
-        let args = "[rankin nimi]"
-        let allowedChannels = permissions.common.channels
-        let allowedRanks = permissions.common.ranks
-        let allowedUsers = permissions.common.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
+    const help = {
+        key: "help",
+        minArgs: 0,
+        maxArgs: 1,
+        handlerFunction: helpCommand,
+        ...getFromConfig("help")
     }
+
+    const pub = {
+        help
+    }
+
+
 
     return pub;
 

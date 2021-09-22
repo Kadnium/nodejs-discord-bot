@@ -6,19 +6,29 @@ const radioChannels = require('../radio');
 const YoutubeScraper = require('../main/YoutubeScraper');
 
 
-module.exports = function ({ youtube_api_key, music_theme_color, permissions }) {
+module.exports = function ({ youtube_api_key, music_theme_color, commands }) {
     const YoutubeAPI = YoutubeScraper();
-    let pub = {}
     const queue = new Map();
 
-    checkVoiceChannel = function (msgObj) {
+    const getFromConfig = (key) => {
+        if (commands[key]) {
+            return commands[key]
+        } else {
+            throw "MUSICPLAYER.JS " + key + " COMMAND NOT DEFINED IN CONFIG"
+        }
+
+    }
+
+
+
+    const checkVoiceChannel = (msgObj) => {
         if (!msgObj.member.voice.channel) {
             msgObj.channel.send("Et ole puhekanavalla!")
             return false;
         }
         return true;
     }
-    pub.handlePlay = async function (msgObj, command) {
+    const playCommand = async (msgObj, command) => {
         command.shift()
         if (!checkVoiceChannel(msgObj)) {
             return;
@@ -67,7 +77,7 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
             try {
                 let connection = await voiceChannel.join();
                 queueObj.connection = connection;
-                play(msgObj.guild.id, queueObj.songs[0], msgObj);
+                startPlay(msgObj.guild.id, queueObj.songs[0], msgObj);
 
                 setTimeout(() => checkVoiceChannelActivity(msgObj), 30000);
 
@@ -91,21 +101,9 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         }
 
 
-
     }
 
-    pub.playHelp = function () {
-        let minArgs = 1;
-        let maxArgs = 10;
-        let usage = "play";
-        let description = "Toista musiikkia";
-        let args = "[kappaleen nimi / url]"
-        let allowedChannels = permissions.music.channels
-        let allowedRanks = permissions.music.ranks
-        let allowedUsers = permissions.music.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
-    pub.radio = async function (msgObj, message) {
+    const radioCommand = async (msgObj, message) => {
         let url = radioChannels[message[1]]
         let channel = msgObj.channel;
         if (!checkVoiceChannel(msgObj)) {
@@ -141,7 +139,7 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
                 try {
                     let connection = await voiceChannel.join();
                     queueObj.connection = connection;
-                    play(msgObj.guild.id, queueObj.songs[0], msgObj);
+                    startPlay(msgObj.guild.id, queueObj.songs[0], msgObj);
 
                     setTimeout(() => checkVoiceChannelActivity(msgObj), 30000);
 
@@ -161,19 +159,9 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
             channel.send("Kanavaa ei löytynyt")
         }
     }
-    pub.radioHelp = function (msgObj, message) {
-        let minArgs = 1;
-        let maxArgs = 1;
-        let usage = "radio";
-        let description = "Soita radiokanavaa";
-        let args = "[radiokanava]"
-        let allowedChannels = permissions.music.channels
-        let allowedRanks = permissions.music.ranks
-        let allowedUsers = permissions.music.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
 
-    pub.radiochannels = function (msgObj, message) {
+
+    const radioChannelsCommand = (msgObj, message) => {
         let channel = msgObj.channel;
         const radioEmbed = new MessageEmbed()
             .setColor(music_theme_color)
@@ -185,34 +173,6 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         radioEmbed.addField("Kanavat", chStr);
         channel.send(radioEmbed)
     }
-    // pub.addChannel = function (msgObj, message) {
-    //     radioChannels = require("../radio");
-    //     msgObj.channel.send("Radiokanavat uudelleenladattu")
-    // }
-    // pub.reloadChannelsHelp = function () {
-    //     let minArgs = 0;
-    //     let maxArgs = 0;
-    //     let usage = "radiokanavat";
-    //     let description = "Listaa radiokanavat";
-    //     let args = "-"
-    //     let allowedChannels = permissions.music.channels
-    //     let allowedRanks = permissions.music.ranks
-    //     let allowedUsers = permissions.music.users
-    //     return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    // }
-    pub.radiochannelsHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "radiokanavat";
-        let description = "Listaa radiokanavat";
-        let args = "-"
-        let allowedChannels = permissions.music.channels
-        let allowedRanks = permissions.music.ranks
-        let allowedUsers = permissions.music.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
-
-
 
     let checkVoiceChannelActivity = function (msgObj) {
         let guildId = msgObj.guild.id;
@@ -342,7 +302,7 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         }
     }
 
-    pub.np = function (msgObj, command) {
+    const npCommand = (msgObj, command) => {
         let guildId = msgObj.guild.id;
         let serverQueue = queue.get(guildId);
         if (serverQueue) {
@@ -354,19 +314,8 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         msgObj.channel.send("Ei kappaleita")
     }
 
-    pub.npHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "np";
-        let description = "Näytä tämänhetken kappale";
-        let args = ""
-        let allowedChannels = permissions.music.channels
-        let allowedRanks = permissions.music.ranks
-        let allowedUsers = permissions.music.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
 
-    pub.playlist = function (msgObj, command) {
+    const playlistCommand = (msgObj, command) => {
         const serverQueue = queue.get(msgObj.guild.id);
         // let returnStr = "Ei kappaleita soittolistalla"
         const embed = new MessageEmbed()
@@ -391,21 +340,10 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         msgObj.channel.send(embed);
     }
 
-    pub.playlistHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "playlist";
-        let description = "Listaa kappaleet";
-        let args = ""
-        let allowedChannels = permissions.music.channels
-        let allowedRanks = permissions.music.ranks
-        let allowedUsers = permissions.music.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
 
 
 
-    pub.skip = function (msgObj, command) {
+    const skipCommand = (msgObj, command) => {
         if (!checkVoiceChannel(msgObj)) {
             return;
         }
@@ -420,23 +358,12 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         }
         serverQueue.connection.dispatcher.end();
         msgObj.channel.send(`${serverQueue.songs[0].title} skipattu!`);
-
-
-
-    }
-    pub.skipHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "skip";
-        let description = "Skippaa kappale";
-        let args = ""
-        let allowedChannels = permissions.music.channels
-        let allowedRanks = permissions.music.ranks
-        let allowedUsers = permissions.music.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedUsers, allowedRanks }
     }
 
-    pub.clear = function (msgObj, command) {
+
+
+
+    const clearCommand = (msgObj, command) => {
         if (!checkVoiceChannel(msgObj)) {
             return;
         }
@@ -450,18 +377,12 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         }
 
     }
-    pub.clearHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "clear";
-        let description = "Tyhjennä soittolista";
-        let args = ""
-        let allowedChannels = permissions.music.channels
-        let allowedRanks = permissions.music.ranks
-        let allowedUsers = permissions.music.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
-    pub.repeat = function (msgObj, command) {
+
+
+    const repeatCommand = (msgObj, command) => {
+        if (!checkVoiceChannel(msgObj)) {
+            return;
+        }
         let serverQueue = queue.get(msgObj.guild.id);
         let channel = msgObj.channel;
         if (serverQueue) {
@@ -474,19 +395,10 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         }
 
     }
-    pub.repeatHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "repeat";
-        let description = "Toista tämänhetkistä kappaletta repeatilla";
-        let args = ""
-        let allowedChannels = permissions.music.channels
-        let allowedRanks = permissions.music.ranks
-        let allowedUsers = permissions.music.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
 
-    pub.volume = function (msgObj, command) {
+
+
+    const volumeCommand = (msgObj, command) => {
         if (!checkVoiceChannel(msgObj)) {
             return;
         }
@@ -505,20 +417,10 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         }
 
     }
-    pub.volumeHelp = function () {
-        let minArgs = 1;
-        let maxArgs = 1;
-        let usage = "volume";
-        let description = "Muuta musiikin voimakkuutta";
-        let args = "[luku 0-1000]"
-        let allowedChannels = permissions.music.volume.channels;
-        let allowedRanks = permissions.music.volume.ranks;
-        let allowedUsers = permissions.music.volume.users;
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
 
 
-    let play = async function (guild, song, msgObj) {
+
+    const startPlay = async function (guild, song, msgObj) {
         let serverQueue = queue.get(guild);
         if (!song) {
             serverQueue.voiceChannel.leave();
@@ -544,7 +446,7 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
                 if (song) {
                     msgObj.channel.send(createInfoThumbnail(song, guild, false))
                 }
-                play(guild, song, msgObj);
+                startPlay(guild, song, msgObj);
 
             })
             .on('error', error => {
@@ -555,6 +457,94 @@ module.exports = function ({ youtube_api_key, music_theme_color, permissions }) 
         //console.log(dispatcher);
         dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
         serverQueue.dispatcher = dispatcher;
+    }
+
+    const play = {
+        key: "play",
+        minArgs: 1,
+        maxArgs: 10,
+        handlerFunction: playCommand,
+        ...getFromConfig("play")
+    }
+
+
+    const radio = {
+        key: "radio",
+        minArgs: 1,
+        maxArgs: 1,
+        handlerFunction: radioCommand,
+        ...getFromConfig("radio")
+    }
+
+
+    const radiochannels = {
+        key: "radiochannels",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: radioChannelsCommand,
+        ...getFromConfig("radiochannels")
+    }
+
+    const np = {
+        key: "np",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: npCommand,
+        ...getFromConfig("np")
+    }
+
+    const playlist = {
+        key: "playlist",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: playlistCommand,
+        ...getFromConfig("playlist")
+    }
+
+    const skip = {
+        key: "skip",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: skipCommand,
+        ...getFromConfig("skip")
+    }
+
+    const clear = {
+        key: "clear",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: clearCommand,
+        ...getFromConfig("clear")
+    }
+
+    const repeat = {
+        key: "repeat",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: repeatCommand,
+        ...getFromConfig("repeat")
+    }
+
+    const volume = {
+        key: "volume",
+        minArgs: 1,
+        maxArgs: 1,
+        handlerFunction: volumeCommand,
+        ...getFromConfig("volume")
+    }
+
+
+
+    const pub = {
+        play,
+        radio,
+        radiochannels,
+        np,
+        playlist,
+        clear,
+        skip,
+        repeat,
+        volume,
     }
 
 

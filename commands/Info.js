@@ -2,10 +2,19 @@ const patchnotes = require("../patchnotes.json")
 //const { main_theme_color, permissions, name } = require('../config')
 const { MessageEmbed } = require('discord.js');
 
-module.exports = function ({ main_theme_color, permissions, name }) {
-    let pub = {}
+module.exports = function ({ main_theme_color, commands, name }) {
 
-    pub.info = function (msgObj, message) {
+    const getFromConfig = (key) => {
+        if (commands[key]) {
+            return commands[key]
+        } else {
+            throw "INFO.JS " + key + " COMMAND NOT DEFINED IN CONFIG"
+        }
+
+    }
+
+
+    const infoCommand = (msgObj, message) => {
         let info = patchnotes.info;
         let verHist = patchnotes.versionHistory;
         let currentVer = verHist[verHist.length - 1].version;
@@ -22,18 +31,20 @@ module.exports = function ({ main_theme_color, permissions, name }) {
         channel.send(patchEmbed);
     }
 
-    pub.infoHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "info";
-        let description = "Kertoo tietoa botista";
-        let args = "-"
-        let allowedChannels = permissions.common.channels
-        let allowedRanks = permissions.common.ranks
-        let allowedUsers = permissions.common.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
+
+    const info = {
+        key: "info",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: infoCommand,
+        ...getFromConfig("info")
+    }
+
+    const pub = {
+        info
     }
 
     return pub;
+
 
 }

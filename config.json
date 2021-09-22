@@ -30,22 +30,6 @@
             "channels": [],
             "ranks": [],
             "users": [],
-            "vote": {
-                "channels": [
-                    "äänestys"
-                ],
-                "ranks": [],
-                "users": []
-            },
-            "voteAdmin": {
-                "channels": [
-                    "äänestys"
-                ],
-                "ranks": [
-                    "Rooli"
-                ],
-                "users": []
-            },
             "year": {
                 "channels": [
                     "2018",
@@ -56,7 +40,17 @@
                 "users": []
             }
         },
-        "messageGate": {
+        "vote": {
+            "channels": [
+                "äänestys"
+            ],
+            "ranks": [],
+            "users": []
+        },
+        "admin": {
+            "channels": [],
+            "ranks": [],
+            "users": [],
             "mute": {
                 "channels": [],
                 "ranks": [
@@ -64,13 +58,214 @@
                 ],
                 "users": []
             },
-            "media": {
+            "unmute": {
+                "channels": [],
+                "ranks": [
+                    "Rooli"
+                ],
+                "users": []
+            },
+            "images": {
+                "channels": [],
+                "ranks": [
+                    "Rooli"
+                ],
+                "users": []
+            },
+            "gifs": {
                 "channels": [],
                 "ranks": [
                     "Rooli"
                 ],
                 "users": []
             }
+        }
+    },
+    "commands": {
+        "play": {
+            "namespace": "music",
+            "description": "Toista musiikkia",
+            "args": "[kappaleen nimi / url]",
+            "usage": [
+                "play"
+            ]
+        },
+        "radio": {
+            "namespace": "music",
+            "description": "Soita radiokanavaa",
+            "args": "[radiokanava]",
+            "usage": [
+                "radio"
+            ]
+        },
+        "radiochannels": {
+            "namespace": "music",
+            "description": "Listaa radiokanavat",
+            "args": "-",
+            "usage": [
+                "radiokanavat"
+            ]
+        },
+        "np": {
+            "namespace": "music",
+            "description": "Näytä tämänhetken kappale",
+            "args": "-",
+            "usage": [
+                "np"
+            ]
+        },
+        "playlist": {
+            "namespace": "music",
+            "description": "Listaa kappaleet",
+            "args": "",
+            "usage": [
+                "playlist"
+            ]
+        },
+        "skip": {
+            "namespace": "music",
+            "description": "Skippaa kappale",
+            "args": "",
+            "usage": [
+                "skip"
+            ]
+        },
+        "clear": {
+            "namespace": "music",
+            "description": "Tyhjennä soittolista",
+            "args": "",
+            "usage": [
+                "clear"
+            ]
+        },
+        "repeat": {
+            "namespace": "music",
+            "description": "Toista tämänhetkistä kappaletta repeatilla",
+            "args": "",
+            "usage": [
+                "repeat"
+            ]
+        },
+        "volume": {
+            "namespace": "music",
+            "description": "Muuta musiikin voimakkuutta",
+            "args": "[luku 0-1000]",
+            "usage": [
+                "volume"
+            ]
+        },
+        "help": {
+            "namespace": "common",
+            "description": "Listaa tiedot komennoista",
+            "args": "[rankin nimi]",
+            "usage": [
+                "help"
+            ]
+        },
+        "info": {
+            "namespace": "common",
+            "description": "Kertoo tietoa botista",
+            "args": "-",
+            "usage": [
+                "info"
+            ]
+        },
+        "patchnotes": {
+            "namespace": "common",
+            "description": "Listaa botin version muutokset",
+            "args": "[versio]",
+            "usage": [
+                "patchnotes"
+            ]
+        },
+        "year": {
+            "namespace": "common",
+            "description": "Listaa vuosikanavan viestit",
+            "args": "-",
+            "usage": [
+                "vuosi",
+                "year"
+            ]
+        },
+        "vote": {
+            "namespace": "vote",
+            "description": "Äänestä äänestyksessä",
+            "args": "[luku]",
+            "usage": [
+                "vote"
+            ]
+        },
+        "votestatus": {
+            "namespace": "vote",
+            "description": "Kertoo tietoa nykyisestä äänestyksestä",
+            "args": "-",
+            "usage": [
+                "votestatus"
+            ]
+        },
+        "createvote": {
+            "namespace": "vote",
+            "description": "Luo äänestys",
+            "args": "[luku]",
+            "usage": [
+                "createvote"
+            ]
+        },
+        "voteoption": {
+            "namespace": "vote",
+            "description": "Lisää vaihtoehto",
+            "args": "[vaihtoehto]",
+            "usage": [
+                "voteoption"
+            ]
+        },
+        "startvote": {
+            "namespace": "vote",
+            "description": "Aloita luotu äänestys",
+            "args": "[kesto sekunteina]",
+            "usage": [
+                "startvote"
+            ]
+        },
+        "endvote": {
+            "namespace": "vote",
+            "description": "Lopeta luotu äänestys",
+            "args": "-",
+            "usage": [
+                "endvote"
+            ]
+        },
+        "gifs": {
+            "namespace": "admin",
+            "description": "Enabloi/disabloi giffit",
+            "args": "-",
+            "usage": [
+                "gifs"
+            ]
+        },
+        "images": {
+            "namespace": "admin",
+            "description": "Enabloi/disabloi kuvat",
+            "args": "-",
+            "usage": [
+                "gifs"
+            ]
+        },
+        "unmute": {
+            "namespace": "admin",
+            "description": "Unmuteta käyttäjä",
+            "args": "[käyttäjä]",
+            "usage": [
+                "unmute"
+            ]
+        },
+        "mute": {
+            "namespace": "admin",
+            "description": "Muteta käyttäjä",
+            "args": "[käyttäjä]",
+            "usage": [
+                "mute"
+            ]
         }
     }
 }

@@ -1,10 +1,21 @@
 //const { main_theme_color, permissions } = require('../config')
 const { MessageEmbed } = require('discord.js');
 
-module.exports = function ({ main_theme_color, permissions }) {
-    let pub = {}
+module.exports = function ({ main_theme_color, commands }) {
 
-    pub.year = async function (msgObj, command) {
+    const getFromConfig = (key) => {
+        if (commands[key]) {
+            return commands[key]
+        } else {
+            throw "YEAR.JS " + key + " COMMAND NOT DEFINED IN CONFIG"
+        }
+
+    }
+
+
+
+
+    const yearCommand = async (msgObj, command) => {
         let user = msgObj.member.user;
         let author = msgObj.author;
         let id = user.id;
@@ -51,7 +62,7 @@ module.exports = function ({ main_theme_color, permissions }) {
 
 
     }
-    getMessages = async function (channel, id, before) {
+    const getMessages = async function (channel, id, before) {
         let queryObj = { limit: 100 }
         if (before) {
             queryObj.before = before;
@@ -63,17 +74,16 @@ module.exports = function ({ main_theme_color, permissions }) {
         return fetchedMessages
 
     }
-    pub.yearHelp = () => {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "vuosi";
-        let description = "Listaa vuosikanavan viestit";
-        let args = "-"
-        let allowedChannels = permissions.common.year.channels;
-        let allowedRanks = permissions.common.year.ranks;
-        let allowedUsers = permissions.common.year.users;
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
 
+    const year = {
+        key: "year",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: yearCommand,
+        ...getFromConfig("year")
+    }
+    const pub = {
+        year
     }
 
     return pub

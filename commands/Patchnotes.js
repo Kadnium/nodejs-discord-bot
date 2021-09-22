@@ -1,11 +1,20 @@
-const patchnotes = require("../patchnotes.json")
+const Patchnotes = require("../patchnotes.json")
 //const { main_theme_color, permissions } = require('../config')
 const { MessageEmbed } = require('discord.js');
 
-module.exports = function ({ main_theme_color, permissions }) {
-    let pub = {}
-    pub.patchnotes = function (msgObj, message) {
-        let version = patchnotes.versionHistory;
+module.exports = function ({ main_theme_color, commands }) {
+
+    const getFromConfig = (key) => {
+        if (commands[key]) {
+            return commands[key]
+        } else {
+            throw "PATCHNOTES.JS " + key + " COMMAND NOT DEFINED IN CONFIG"
+        }
+
+    }
+
+    const patchnotesCommand = (msgObj, message) => {
+        let version = Patchnotes.versionHistory;
         let channel = msgObj.channel;
         function generateEmbedField(vers, embed) {
             let versionString = "Versio: " + vers.version + "\n"
@@ -40,17 +49,19 @@ module.exports = function ({ main_theme_color, permissions }) {
 
     }
 
-    pub.patchnotesHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 1;
-        let usage = "patchnotes";
-        let description = "Listaa botin version muutokset";
-        let args = "[versio]"
-        let allowedChannels = permissions.common.channels
-        let allowedRanks = permissions.common.ranks
-        let allowedUsers = permissions.common.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
+
+    const patchnotes = {
+        key: "patchnotes",
+        minArgs: 0,
+        maxArgs: 1,
+        handlerFunction: patchnotesCommand,
+        ...getFromConfig("patchnotes")
     }
+
+    const pub = {
+        patchnotes
+    }
+
 
     return pub;
 }

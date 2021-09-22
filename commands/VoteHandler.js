@@ -1,8 +1,7 @@
 //const { main_theme_color, permissions } = require('../config')
 const { MessageEmbed } = require('discord.js');
 
-module.exports = function ({ main_theme_color, permissions }) {
-    let pub = {}
+module.exports = function ({ main_theme_color, commands }) {
     let initialVote = {
         running: false,
         question: "",
@@ -15,8 +14,19 @@ module.exports = function ({ main_theme_color, permissions }) {
     let timerId = null;
     let currentVote = null;
 
+    const getFromConfig = (key) => {
+        if (commands[key]) {
+            return commands[key]
+        } else {
+            throw "VOTEHANDLER.JS " + key + " COMMAND NOT DEFINED IN CONFIG"
+        }
 
-    pub.vote = function (msgObj, command) {
+    }
+
+
+
+
+    const voteCommand = (msgObj, command) => {
         let channel = msgObj.channel;
         if (!isVoteRunning()) {
             channel.send("Ei äänestystä käynnissä!")
@@ -47,23 +57,14 @@ module.exports = function ({ main_theme_color, permissions }) {
         votedUsers.push(userFull)
         channel.send("Äänestit vaihtoehtoa " + command[1])
     }
-    //vote 1
-    pub.voteHelp = function () {
-        let minArgs = 1;
-        let maxArgs = 1;
-        let usage = "vote";
-        let description = "Äänestä äänestyksessä";
-        let args = "[luku]"
-        let allowedChannels = permissions.common.vote.channels
-        let allowedRanks = permissions.common.vote.ranks
-        let allowedUsers = permissions.common.vote.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
-    isVoteRunning = function () {
+
+
+
+    const isVoteRunning = function () {
         return currentVote ? currentVote.running : false;
     }
 
-    pub.createVote = function (msgObj, command) {
+    const createVoteCommand = (msgObj, command) => {
         let channel = msgObj.channel;
         if (isVoteRunning()) {
             channel.send("Äänestys käynnissä, pysäytä ensin nykyinen!")
@@ -76,19 +77,8 @@ module.exports = function ({ main_theme_color, permissions }) {
         channel.send("Äänestys '" + commandStr + "' luotu, lisää vaihtoehtoja vähintään 2")
     }
 
-    pub.createVoteHelp = function () {
-        let minArgs = 1;
-        let maxArgs = 10;
-        let usage = "createvote";
-        let description = "Luo äänestys";
-        let args = "[kysymys]"
-        let allowedChannels = permissions.common.voteAdmin.channels
-        let allowedRanks = permissions.common.voteAdmin.ranks
-        let allowedUsers = permissions.common.voteAdmin.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
 
-    pub.voteOption = function (msgObj, command) {
+    const voteOptionCommand = (msgObj, command) => {
         let channel = msgObj.channel;
         if (!currentVote) {
             channel.send("Luo äänestys ensin!")
@@ -101,19 +91,10 @@ module.exports = function ({ main_theme_color, permissions }) {
         currentVote.voteObj[curLen - 1] = 0
         channel.send("Vaihtoehto " + curLen + ": '" + commandStr + "' lisätty")
     }
-    pub.voteOptionHelp = function () {
-        let minArgs = 1;
-        let maxArgs = 10;
-        let usage = "voteoption";
-        let description = "Lisää vaihtoehto";
-        let args = "[vaihtoehto]"
-        let allowedChannels = permissions.common.voteAdmin.channels
-        let allowedRanks = permissions.common.voteAdmin.ranks
-        let allowedUsers = permissions.common.voteAdmin.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
 
-    pub.startVote = function (msgObj, command) {
+
+
+    const startVoteCommand = (msgObj, command) => {
         let channel = msgObj.channel;
         if (!currentVote) {
             channel.send("Luo äänestys ensin!")
@@ -153,7 +134,7 @@ module.exports = function ({ main_theme_color, permissions }) {
 
     }
 
-    handleEnd = function (channel) {
+    const handleEnd = function (channel) {
         if (isVoteRunning()) {
             channel.send("Äänestys ohi")
             printInfo(channel, true);
@@ -169,7 +150,7 @@ module.exports = function ({ main_theme_color, permissions }) {
 
     }
 
-    getWinner = function () {
+    const getWinner = function () {
         function getRandomInt(max) {
             return Math.floor(Math.random() * Math.floor(max));
         }
@@ -184,7 +165,7 @@ module.exports = function ({ main_theme_color, permissions }) {
         let returnElement = randomArr[getRandomInt(randomArr.length)]
         return returnElement[0][0];
     }
-    printInfo = function (channel, handleEnding) {
+    const printInfo = function (channel, handleEnding) {
         const choises = currentVote.choices
         let voteEmbed = new MessageEmbed()
             .setColor(main_theme_color)
@@ -215,19 +196,7 @@ module.exports = function ({ main_theme_color, permissions }) {
     }
 
 
-    pub.startVoteHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 1;
-        let usage = "startvote";
-        let description = "Aloita luotu äänestys";
-        let args = "[kesto sekunteina]"
-        let allowedChannels = permissions.common.voteAdmin.channels
-        let allowedRanks = permissions.common.voteAdmin.ranks
-        let allowedUsers = permissions.common.voteAdmin.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
-
-    pub.endVote = function (msgObj, command) {
+    const endVoteCommand = (msgObj, command) => {
         let channel = msgObj.channel;
         if (!currentVote) {
             channel.send("Luo äänestys ensin!")
@@ -235,21 +204,10 @@ module.exports = function ({ main_theme_color, permissions }) {
         }
         handleEnd(channel);
     }
-    //voteStatus,endVote,startVote,voteOption, createVote, vote
 
-    pub.endVoteHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "endvote";
-        let description = "Lopeta luotu äänestys";
-        let args = "-"
-        let allowedChannels = permissions.common.voteAdmin.channels
-        let allowedRanks = permissions.common.voteAdmin.ranks
-        let allowedUsers = permissions.common.voteAdmin.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
-    }
 
-    pub.voteStatus = function (msgObj, command) {
+
+    const voteStatusCommand = (msgObj, command) => {
         let channel = msgObj.channel;
         if (!isVoteRunning()) {
             channel.send("Ei äänestystä")
@@ -257,17 +215,67 @@ module.exports = function ({ main_theme_color, permissions }) {
         }
         printInfo(channel, false)
     }
-    pub.voteStatusHelp = function () {
-        let minArgs = 0;
-        let maxArgs = 0;
-        let usage = "votestatus";
-        let description = "Kertoo tietoa nykyisestä äänestyksestä";
-        let args = "-"
-        let allowedChannels = permissions.common.vote.channels
-        let allowedRanks = permissions.common.vote.ranks
-        let allowedUsers = permissions.common.vote.users
-        return { minArgs, usage, description, args, maxArgs, allowedChannels, allowedRanks, allowedUsers }
+
+    const vote = {
+        key: "vote",
+        minArgs: 1,
+        maxArgs: 1,
+        handlerFunction: voteCommand,
+        ...getFromConfig("vote")
     }
+
+    const votestatus = {
+        key: "votestatus",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: voteStatusCommand,
+        ...getFromConfig("votestatus")
+    }
+
+    const createvote = {
+        key: "createvote",
+        minArgs: 1,
+        maxArgs: 10,
+        handlerFunction: createVoteCommand,
+        ...getFromConfig("createvote")
+    }
+
+    const voteoption = {
+        key: "voteoption",
+        minArgs: 1,
+        maxArgs: 10,
+        args: "[vaihtoehto]",
+        handlerFunction: voteOptionCommand,
+        ...getFromConfig("voteoption")
+    }
+
+    const startvote = {
+        key: "startvote",
+        minArgs: 0,
+        maxArgs: 1,
+        handlerFunction: startVoteCommand,
+        ...getFromConfig("startvote")
+    }
+
+
+
+    const endvote = {
+        key: "endvote",
+        minArgs: 0,
+        maxArgs: 0,
+        handlerFunction: endVoteCommand,
+        ...getFromConfig("endvote")
+    }
+
+    const pub = {
+        vote,
+        votestatus,
+        createvote,
+        voteoption,
+        startvote,
+        endvote,
+    }
+
 
 
 
